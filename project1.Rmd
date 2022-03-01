@@ -127,9 +127,30 @@ What is up with season 2?
 
 scoobydoo %>% 
   ggplot(mapping = aes(x = index, y = imdb))+
-  geom_point()
+  geom_point(aes(color = season)) 
 
 ```
+
+```{r}
+scoobydoo_tv %>% 
+  ggplot(mapping = aes(x= index, y = imdb)) +
+    geom_point(aes(color = series_name))
+```
+
+```{r }
+scoobydoo_tv %>% 
+  arrange(imdb)
+```
+
+
+```{r lowest_rated_tv_show}
+  
+scoobydoo_tv %>%
+  filter(series_name == "Shaggy & Scooby-Doo Get a Clue!") %>% 
+  ggplot(mapping = aes(x= season, y = imdb)) +
+    geom_point()
+```
+
 
 At the very start it looks like they were highly rated. Then it almost stabilized a little. Finally all over the place. Where I would go next is how well are the movies rated compared to shows or crossovers.
 
@@ -145,7 +166,7 @@ This is just me playing around with color and trying to graph things.
 
 ```{r Fred was captured}
 scoobydoo %>% 
-    ggplot(mapping = aes(y = season, x = captured_fred))+
+  ggplot(mapping = aes(y = season, x = captured_fred))+
   geom_bar(stat = "identity", fill = "light blue")
 ```
 
@@ -187,6 +208,7 @@ Looks to close to Daphnie. (I couldn't use light orange)
 scoobydoo %>% 
   ggplot(mapping = aes(y = season, x = caught_shaggy))+
   geom_bar(stat = "identity", fill = "light green")
+
 ```
 
 Now I'm confused about what null would mean. My first thought would be the episodes where Shaggy wasn't in them, but that doesn't make sense.
@@ -213,10 +235,10 @@ scoobydoo %>%
   geom_bar(stat = "identity", fill = "brown")
 ```
 
-This was me just messing arought and trying to figure out some big questions we can explore
+This was me just messing around and trying to figure out some big questions we can explore
 
 
-```{r}
+```{r fiter_out_tv_movie_crossover}
 scoobydoo_tv <- scoobydoo %>% 
   filter(format == "TV Series")
 
@@ -228,5 +250,24 @@ scoobydoo_crossover <- scoobydoo %>%
 
 scoobydoo_movie <- scoobydoo %>% 
   filter(format == "Movie")
+
+```
+
+```{r filter_out_different_show}
+
+scoobydoo_where_are_you <- scoobydoo %>% 
+  filter(series_name == "Scooby Doo, Where Are You!")
+
+scoobydoo_the_new_scoobydoo_movies <- scoobydoo_tv %>% 
+  filter(series_name == "The New Scooby-Doo Movies")
+
+the_scoobydoo_show <- scoobydoo %>% 
+  filter(series_name == "The Scooby-Doo Show" )
+
+scoobydoo_and_scrappydoo <- scoobydoo %>% 
+  filter(series_name == "Scooby-Doo and Scrappy-Doo (first series)")
+
+new_scoobydoo_and_scrappydoo_show <- scoobydoo %>% 
+  fiter(series_name == "The New Scooby and Scrappy Doo Show")
 ```
 
