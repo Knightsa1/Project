@@ -1,7 +1,6 @@
-# Project1
 ---
 title: "Scooby-Doo"
-author: "Sara Knight"
+author: "Sara Knight, Alexa Kraklau"
 date: "2/23/2022"
 output: github_document
 ---
@@ -25,6 +24,12 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 
 ```
 
+
+```{r}
+
+scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),]
+
+```
 | Header                        |  Description
 |:------------------------------|:--------------------------------
 |`index`                        | Index ordering based on Scoobypedia (dbl)
@@ -135,7 +140,7 @@ At the very start it looks like they were highly rated. Then it almost stabilize
 
 ```{r Monster caught by Fred}
 
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = caught_fred))+
   geom_bar(stat = "identity", fill = "light blue")
 
@@ -144,7 +149,7 @@ scoobydoo %>%
 This is just me playing around with color and trying to graph things. 
 
 ```{r Fred was captured}
-scoobydoo %>% 
+scoobycleaned %>% 
     ggplot(mapping = aes(y = season, x = captured_fred))+
   geom_bar(stat = "identity", fill = "light blue")
 ```
@@ -152,14 +157,14 @@ scoobydoo %>%
 Fred captures the monster only slightly more than getting caught. Get rid of null?
 
 ```{r Daphnie catches the monster}
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = caught_daphnie))+
   geom_bar(stat = "identity", fill = "purple")
 ```
 Daphnie almost never caught the monster.
 
 ```{r Daphnie caught by the monster}
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = captured_daphnie))+
   geom_bar(stat = "identity", fill = "purple")
 ```
@@ -168,31 +173,31 @@ However she got caught less than I thought (I tried light purple and it didn't w
 
 ```{r Velma caught the monster}
 
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = caught_velma))+
-  geom_bar(stat = "identity", fill = "orange")
+  geom_bar(stat = "identity", fill = " dark orange")
 
 ```
 
 Velma was a little more sucessful than Daphnie, but not much
 
 ```{r Velma got caught by the monster}
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = captured_velma))+
-  geom_bar(stat = "identity", fill = "orange")
+  geom_bar(stat = "identity", fill = "dark orange")
 ```
 Looks to close to Daphnie. (I couldn't use light orange)
 
 ```{r Shaggy caught the monster}
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = caught_shaggy))+
   geom_bar(stat = "identity", fill = "light green")
 ```
 
 Now I'm confused about what null would mean. My first thought would be the episodes where Shaggy wasn't in them, but that doesn't make sense.
 
-```{r Shaggy caught the monster}
-scoobydoo %>% 
+```{r Shaggy caught by monster}
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = captured_shaggy))+
   geom_bar(stat = "identity", fill = "light green")
 ```
@@ -200,20 +205,40 @@ scoobydoo %>%
 Less than Velma and Daphnie, but more than Fred.
 
 ```{r Scooby caught the monster}
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = caught_scooby))+
-  geom_bar(stat = "identity", fill = "brown")
+  geom_bar(stat = "identity", fill = "tan")
 ```
 
-I'm kinda suprise, kinda not that Scooby caught the most monsters.
+I'm kinda suprised, kinda not that Scooby caught the most monsters.
 
 ```{r Scooby caught by monster}
-scoobydoo %>% 
+scoobycleaned %>% 
   ggplot(mapping = aes(y = season, x = captured_scooby))+
-  geom_bar(stat = "identity", fill = "brown")
+  geom_bar(stat = "identity", fill = "tan")
 ```
 
-This was me just messing arought and trying to figure out some big questions we can explore
+```{r bar graph}
+
+ggplot(data=scoobydoo, aes(x=monster_real, fill=monster_real)) +
+    geom_bar(colour="blue", stat="Count") +
+    guides(fill=FALSE)
+
+```
+
+```{r}
+ggplot(data = scoobydoo, aes(x = captured_scooby, y = season, fill = season)) +
+  geom_bar(stat = "Identity", position = position_dodge(), alpha = 0.75) 
+```
+
+
+```{r}
+
+```
+
+
+
+This was me just messing around and trying to figure out some big questions we can explore.
 
 
 ```{r}
@@ -230,3 +255,15 @@ scoobydoo_movie <- scoobydoo %>%
   filter(format == "Movie")
 ```
 
+```{r filter_out_different_show}
+scoobydoo_where_are_you <- scoobydoo %>% 
+  filter(series_name == "Scooby Doo, Where Are You!")
+scoobydoo_the_new_scoobydoo_movies <- scoobydoo_tv %>% 
+  filter(series_name == "The New Scooby-Doo Movies")
+the_scoobydoo_show <- scoobydoo %>% 
+  filter(series_name == "The Scooby-Doo Show" )
+scoobydoo_and_scrappydoo <- scoobydoo %>% 
+  filter(series_name == "Scooby-Doo and Scrappy-Doo (first series)")
+new_scoobydoo_and_scrappydoo_show <- scoobydoo %>% 
+  filter(series_name == "The New Scooby and Scrappy Doo Show")
+```
