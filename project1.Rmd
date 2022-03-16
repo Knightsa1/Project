@@ -12,9 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 l
-```{r load_tidyverse}
+```{r load_packages}
 
 library(tidyverse)
+library(dplyr)
 
 ```
 
@@ -26,8 +27,8 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 
 
 ```{r}
-
 scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),]
+
 
 ```
 | Header                        |  Description
