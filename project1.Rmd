@@ -16,6 +16,7 @@ l
 
 library(tidyverse)
 library(dplyr)
+library(tidyr)
 
 ```
 
@@ -25,10 +26,20 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 
 ```
 
+```{r for side by side bar graph}
+caught_captured<-scoobydoo %>% 
+  select(caught_fred:captured_scooby) %>% 
+  pivot_longer(cols = everything(),
+               names_to = c("action","character"),
+               names_pattern = "(.*)_(.*)",
+               values_to = "yes") %>% 
+  filter(yes == "TRUE")
+
+```
+
 
 ```{r}
 scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),]
-
 
 ```
 | Header                        |  Description
@@ -109,6 +120,16 @@ scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_ty
 |`shaggy_va`                    | Shaggy voice actor (char)
 |`scooby_va`                    | Scooby voice actor (char)
 
+
+
+```{r}
+scoobycaught<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),] %>% 
+  pivot_longer(
+    cols = `caught_fred`:`caught_scooby`,
+    names_to = "caught",
+    values_to = "words"
+  )
+```
 
 **Ideas**
 1. color-coordinated

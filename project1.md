@@ -22,6 +22,7 @@ library(tidyverse)
 
 ``` r
 library(dplyr)
+library(tidyr)
 ```
 
 ``` r
@@ -49,6 +50,16 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
     ##   blue_falcon = col_logical()
     ## )
     ## ℹ Use `spec()` for the full column specifications.
+
+``` r
+caught_captured<-scoobydoo %>% 
+  select(caught_fred:captured_scooby) %>% 
+  pivot_longer(cols = everything(),
+               names_to = c("action","character"),
+               names_pattern = "(.*)_(.*)",
+               values_to = "yes") %>% 
+  filter(yes == "TRUE")
+```
 
 ``` r
 scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),]
@@ -131,6 +142,15 @@ scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_ty
 | `velma_va`                 | Velma voice actor (char)                     |
 | `shaggy_va`                | Shaggy voice actor (char)                    |
 | `scooby_va`                | Scooby voice actor (char)                    |
+
+``` r
+scoobycaught<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),] %>% 
+  pivot_longer(
+    cols = `caught_fred`:`caught_scooby`,
+    names_to = "caught",
+    values_to = "words"
+  )
+```
 
 **Ideas** 1. color-coordinated 2. pull fonts from the internet 5. Keep
 the movies/ Get rid of the movies? 6. What do they mean by crossover?
@@ -274,7 +294,7 @@ ggplot(data = scoobydoo, aes(x = captured_scooby, y = season, fill = season)) +
   geom_bar(stat = "Identity", position = position_dodge(), alpha = 0.75) 
 ```
 
-![](project1_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](project1_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 This was me just messing around and trying to figure out some big
 questions we can explore.
