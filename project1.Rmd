@@ -13,10 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 l
 ```{r load_packages}
-
+library(ggplot2)
 library(tidyverse)
 library(dplyr)
 library(tidyr)
+library(extrafont)
 
 ```
 
@@ -26,7 +27,40 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 
 ```
 
+```{r fonts}
+
+
+```
+
+**Trying to create a color palette for our project**
+```{r colors}
+ scooby_gang_colors <- function(...) {
+   palette <- c(`Shaggy Green` = "#B8B#19",
+                   `Shaggy Red Brown` ="#A44138",
+                   `Velma Orange` = "#F8991D",
+                   `Velma Red` = "#C70C47",
+                   `Daphne Green` = "#D0D61B",
+                   `Daphne Dark Purple` = "#6352A3",
+                   `Scooby Brown` = "#6A3400",
+                   `Scooby Blue` = "#7BDB9",
+                   `Fred Blue` ="#009DDC",
+                   `Fred Orange`= "#F47920",
+                   `Mystery Machine Green` = "#00CFD4", 
+                   `Mystery Machine Blue` ="#00E304")
+  cols <-c(...)
+  
+  if (is.null(cols))
+    return(palette)
+  
+  palette[cols]
+}
+#scooby_gang_colors("Shaggy Green")
+```
+https://drsimonj.svbtle.com/creating-corporate-colour-palettes-for-ggplot2
+
+
 ```{r for side by side bar graph}
+
 caught_captured<-scoobydoo %>% 
   select(caught_fred:captured_scooby) %>% 
   pivot_longer(cols = everything(),
@@ -37,6 +71,22 @@ caught_captured<-scoobydoo %>%
 
 ```
 
+```{r side by side bar graph}
+boxplot1 <- ggplot(data = caught_captured, aes(x = character, fill = action)) +
+  geom_bar(stat = "count", position = position_dodge(), alpha = 1,) +
+  scale_fill_manual(values=c("captured" = "#00CFD4",
+                             "caught" = "#00E304"))
+
+
+boxplot1 <- boxplot1 + labs(title = "Captured versus Caught for Each Character",
+              subtitle = "Comparison of amount of episodes each character was captured by monster versus catching the monster",
+              x = "Characters", y = "Number of Episodes",
+              fill="Action",
+              tag = "1") +
+  theme(text=element_text(size=10,  family="Arial", color= "purple"))
+
+boxplot1
+```
 
 ```{r}
 scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),]

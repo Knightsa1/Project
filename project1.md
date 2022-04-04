@@ -6,15 +6,16 @@ Sara Knight, Alexa Kraklau
 l
 
 ``` r
+library(ggplot2)
 library(tidyverse)
 ```
 
     ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
 
-    ## ✓ ggplot2 3.3.4     ✓ purrr   0.3.4
     ## ✓ tibble  3.1.2     ✓ dplyr   1.0.7
     ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
     ## ✓ readr   1.4.0     ✓ forcats 0.5.1
+    ## ✓ purrr   0.3.4
 
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
@@ -23,7 +24,10 @@ library(tidyverse)
 ``` r
 library(dplyr)
 library(tidyr)
+library(extrafont)
 ```
+
+    ## Registering fonts with R
 
 ``` r
 scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-07-13/scoobydoo.csv')
@@ -51,6 +55,34 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
     ## )
     ## ℹ Use `spec()` for the full column specifications.
 
+**Trying to create a color palette for our project**
+
+``` r
+ scooby_gang_colors <- function(...) {
+   palette <- c(`Shaggy Green` = "#B8B#19",
+                   `Shaggy Red Brown` ="#A44138",
+                   `Velma Orange` = "#F8991D",
+                   `Velma Red` = "#C70C47",
+                   `Daphne Green` = "#D0D61B",
+                   `Daphne Dark Purple` = "#6352A3",
+                   `Scooby Brown` = "#6A3400",
+                   `Scooby Blue` = "#7BDB9",
+                   `Fred Blue` ="#009DDC",
+                   `Fred Orange`= "#F47920",
+                   `Mystery Machine Green` = "#00CFD4", 
+                   `Mystery Machine Blue` ="#00E304")
+  cols <-c(...)
+  
+  if (is.null(cols))
+    return(palette)
+  
+  palette[cols]
+}
+#scooby_gang_colors("Shaggy Green")
+```
+
+<https://drsimonj.svbtle.com/creating-corporate-colour-palettes-for-ggplot2>
+
 ``` r
 caught_captured<-scoobydoo %>% 
   select(caught_fred:captured_scooby) %>% 
@@ -60,6 +92,25 @@ caught_captured<-scoobydoo %>%
                values_to = "yes") %>% 
   filter(yes == "TRUE")
 ```
+
+``` r
+boxplot1 <- ggplot(data = caught_captured, aes(x = character, fill = action)) +
+  geom_bar(stat = "count", position = position_dodge(), alpha = 1,) +
+  scale_fill_manual(values=c("captured" = "#00CFD4",
+                             "caught" = "#00E304"))
+
+
+boxplot1 <- boxplot1 + labs(title = "Captured versus Caught for Each Character",
+              subtitle = "Comparison of amount of episodes each character was captured by monster versus catching the monster",
+              x = "Characters", y = "Number of Episodes",
+              fill="Action",
+              tag = "1") +
+  theme(text=element_text(size=10,  family="Arial", color= "purple"))
+
+boxplot1
+```
+
+![](project1_files/figure-gfm/side%20by%20side%20bar%20graph-1.png)<!-- -->
 
 ``` r
 scoobycleaned<-scoobydoo[!(scoobydoo$monster_name=="NULL" & scoobydoo$monster_type=="NULL"),]
