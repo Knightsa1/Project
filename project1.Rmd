@@ -110,7 +110,8 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 **Trying to create a color palette for our project**
 
 ```{r}
-scooby_gang_colors <- c(`Shaggy Green` = "#B8B#19",
+ scooby_gang_colors <- function(...) {
+   palette <- c(`Shaggy Green` = "#B8B#19",
                    `Shaggy Red Brown` ="#A44138",
                    `Velma Orange` = "#F8991D",
                    `Velma Red` = "#C70C47",
@@ -123,28 +124,18 @@ scooby_gang_colors <- c(`Shaggy Green` = "#B8B#19",
                    `Mystery Machine Green` = "#00CFD4", 
                    `Mystery Machine Blue` ="#00E304")
 
-scooby_gang_colors <- function(...) {
+
   cols <-c(...)
   
   if (is.null(cols))
-    return(scooby_gang_colors)
+    return(palette)
   
-  scooby_gang_colors[cols]
+  palette[cols]
 }
 
-scooby_gang_colors("Shaggy Green")
+#scooby_gang_colors("Shaggy Green")
 
-#shaggy_colors <- (`Shaggy Green` = "#B8B#19",`Shaggy Red Brown` ="#A44138")
 
-#velma_colors <- c(`Velma Orange` = "#F8991D", `Velma Red` ="#C70C47")
-
-#daphne_colors <- c(`Daphne Green` = "#D0D61B", `Daphne Dark Purple` = "#6352A3")
-
-#scooby_colors <- c(`Scooby Brown` = "#6A3400", `Scooby Blue` = "#7BDB9")
-
-#fred_colors <- c(`Fred Blue` ="#009DDC", `Fred Orange`= "#F47920")
-
-#mystery_colors <- c(`Mystery Machine Green` = "#00CFD4", `Mystery Machine Blue` ="#00E304")
 ```
 https://drsimonj.svbtle.com/creating-corporate-colour-palettes-for-ggplot2
 
@@ -278,7 +269,7 @@ map1 <- ggplot(mapdata, aes(x = long, y = lat, group = group))+
   geom_polygon(aes(fill = num_of_episodes), color = "black")
 map1
 
-scoobydoo_world_map <- map1 + scale_fill_gradient(name = "Number of Episodes", low = "light blue", high = "green", na.value = "gray")+
+scoobydoo_world_map <- map1 + scale_fill_gradient(name = "Number of Episodes", low = "Mystery Machine Blue", high = "Maystery Machine", na.value = "gray")+
   labs(title = "Mystery Inc Traveling Around the World",
        caption = "Excluded Places inclued: Atlantis, Bermuda Triangle, Mars, Moon, Pre-Historic, and Space")+
   theme(axis.text.x = element_blank(),
