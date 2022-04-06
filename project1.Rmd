@@ -11,9 +11,10 @@ output: github_document
 
 library(tidyverse)
 library(ggplot2)
+library(infer)
 
 ```
-This is one of my expamples of loading data.
+This is one of my examples of loading data.
 ```{r load_scoobydoo_data}
 
 scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-07-13/scoobydoo.csv')
@@ -133,7 +134,7 @@ scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
   palette[cols]
 }
 
-#scooby_gang_colors("Shaggy Green")
+#scooby_gang_colors("Shaggy Green") This was to check if it worked
 
 
 ```
@@ -166,6 +167,7 @@ filtered out the data points that weren't useful to making my map.
 This is also an example of creating a graphical display of the world with a 
 gradient of how many episodes were in the country.
 ```{r}
+
 scoobydoo_earth <- scoobydoo %>% 
   select(setting_country_state)
 
@@ -239,7 +241,6 @@ scoobydoo_earth[scoobydoo_earth == "Hong Kong"] <- "China"
 
 scoobydoo_earth[scoobydoo_earth == "Siam"] <- "Thailand"
 
-
 scoobydoo_earth <- scoobydoo_earth %>% 
   group_by(setting_country_state) %>% 
   summarise(num_of_episodes = n()) %>% 
@@ -256,7 +257,6 @@ scoobydoo_earth <- scoobydoo_earth %>%
   filter(setting_country_state != "South America") %>% #South America is a continent
   filter(setting_country_state != "Tibet") #I don't know enough about the history of Tibet
   
-
 names(scoobydoo_earth)[names(scoobydoo_earth) == "setting_country_state"] <- "region"
 
 mapdata <- map_data("world")
@@ -269,7 +269,7 @@ map1 <- ggplot(mapdata, aes(x = long, y = lat, group = group))+
   geom_polygon(aes(fill = num_of_episodes), color = "black")
 map1
 
-scoobydoo_world_map <- map1 + scale_fill_gradient(name = "Number of Episodes", low = "Mystery Machine Blue", high = "Maystery Machine", na.value = "gray")+
+scoobydoo_world_map <- map1 + scale_fill_gradient(name = "Number of Episodes", low = scooby_gang_colors("Mystery Machine Green"), high = scooby_gang_colors("Mystery Machine Blue"), na.value = "gray")+
   labs(title = "Mystery Inc Traveling Around the World",
        caption = "Excluded Places inclued: Atlantis, Bermuda Triangle, Mars, Moon, Pre-Historic, and Space")+
   theme(axis.text.x = element_blank(),
@@ -280,11 +280,31 @@ scoobydoo_world_map <- map1 + scale_fill_gradient(name = "Number of Episodes", l
       rect = element_blank())
 scoobydoo_world_map
 
-#This was an attempt to figure out where the two data frames weren't matching up
-#in_scooby_not_in_real_world <- anti_join(scoobydoo_earth, mapdata, by = "region")
-
 ```
 I used this (youtube video)[https://www.youtube.com/watch?v=AgWgPSZ7Gp0] to find out how to make the world map
+
+```{r guest_stars}
+hex_girls_guest_star <- scoobydoo %>% 
+  filter(hex_girls != "FALSE")
+
+batman_guest_star <- scoobydoo %>% 
+  filter(batman != "FALSE")
+
+blue_falcon_guest_star <- scoobydoo %>% 
+  filter(blue_falcon != "FALSE")
+
+scooby_dum_guest_star <- scoobydoo %>% 
+  filter(scooby_dum != "FALSE")
+
+scrappy_doo_guest_star <- scoobydoo %>% 
+  filter(scrappy_doo != "FALSE")
+
+#Left Join These
+#Also you want to do something with catch phrases
+
+
+```
+
 
 ```{r Monster caught by Fred}
 scoobydoo %>% 
