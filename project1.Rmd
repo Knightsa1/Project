@@ -4,6 +4,7 @@ author: "Sara Knight, Alexa Kraklau"
 date: "2/23/2022"
 output: github_document
 ---
+access code: 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
 
 **Ideas**
 1. color-coordinated
