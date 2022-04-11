@@ -283,6 +283,40 @@ scoobydoo_world_map
 ```
 I used this (youtube video)[https://www.youtube.com/watch?v=AgWgPSZ7Gp0] to find out how to make the world map
 
+```{r catchphrases}
+scoobydoo_cp <- scoobydoo %>% 
+  select("another_mystery", "jeepers", "jinkies", "my_glasses", "zoinks","groovy","rooby_rooby_roo")
+
+scoobydoo_cp[scoobydoo_cp == "NULL"] <- "0"
+
+scoobydoo_cp[] <- lapply(scoobydoo_cp, as.numeric)
+
+fred <- sum(scoobydoo_cp$another_mystery) 
+daphne <- sum(scoobydoo_cp$jeepers)
+velma1 <- sum(scoobydoo_cp$jinkies)
+velma2 <- sum(scoobydoo_cp$my_glasses)
+shaggy1 <- sum(scoobydoo_cp$zoinks)
+shaggy2 <- sum(scoobydoo_cp$groovy)
+scooby <- sum(scoobydoo_cp$rooby_rooby_roo)
+
+velma <- sum(velma1,velma2)
+shaggy <- sum(shaggy1,shaggy2)
+
+character <- c("Fred", "Daphne", "Velma", "Shaggy", "Scooby")
+catch_phrase <- c(fred, daphne, velma, shaggy, scooby)
+
+gang_cp <- data.frame(character, catch_phrase)
+
+ggplot(data = gang_cp)+
+  geom_bar(mapping = aes(x = character, y = catch_phrase), stat = "identity")+
+  scale_fill_manual(values =c("Fred" = scooby_gang_colors("Fred Blue"),
+                              "Daphne" = scooby_gang_colors("Daphne Purple"),
+                              "Velma" = scooby_gang_colors("Velma Orange"),
+                              "Shaggy" =scooby_gang_colors("Shaggy Green"),
+                              "Scooby" = scooby_gang_colors("Scooby Brown")))
+```
+
+
 ```{r guest_stars}
 hex_girls_guest_star <- scoobydoo %>% 
   filter(hex_girls != "FALSE")
@@ -305,85 +339,4 @@ scrappy_doo_guest_star <- scoobydoo %>%
 
 ```
 
-
-```{r Monster caught by Fred}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = caught_fred))+
-  geom_bar(stat = "identity", scale_color_manual(fill = fred_colors)
-
-```
-
-
-This is just me playing around with color and trying to graph things. 
-
-```{r Fred was captured}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = captured_fred))+
-  geom_bar(stat = "identity", fill = "light blue"),
-```
-
-Fred captures the monster only slightly more than getting caught. Get rid of null?
-
-```{r Daphnie catches the monster}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = caught_daphnie))+
-  geom_bar(stat = "identity", fill = "purple"),
-```
-Daphnie almost never caught the monster.
-
-```{r Daphnie caught by the monster}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = captured_daphnie))+
-  geom_bar(stat = "identity", fill = "purple"),
-```
-However she got caught less than I thought (I tried light purple and it didn't work)
-
-
-```{r Velma caught the monster}
-
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = caught_velma))+
-  geom_bar(stat = "identity", fill = "orange"),
-
-```
-
-Velma was a little more sucessful than Daphnie, but not much
-
-```{r Velma got caught by the monster}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = captured_velma))+
-  geom_bar(stat = "identity", fill = "orange"),
-```
-Looks to close to Daphnie. (I couldn't use light orange)
-
-```{r Shaggy caught the monster}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = caught_shaggy))+
-  geom_bar(stat = "identity", fill = "light green"),
-
-```
-
-Now I'm confused about what null would mean. My first thought would be the episodes where Shaggy wasn't in them, but that doesn't make sense.
-
-```{r Shaggy caught the monster}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = captured_shaggy))+
-  geom_bar(stat = "identity", fill = "light green"),
-```
-
-Less than Velma and Daphnie, but more than Fred.
-
-```{r Scooby caught the monster}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = caught_scooby))+
-  geom_bar(stat = "identity", fill = "brown"),
-```
-
-I'm kinda suprise, kinda not that Scooby caught the most monsters.
-
-```{r Scooby caught by monster}
-scoobydoo %>% 
-  ggplot(mapping = aes(y = season, x = captured_scooby))+
-  geom_bar(stat = "identity", fill = "brown"),
-```
 
