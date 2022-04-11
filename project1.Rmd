@@ -13,6 +13,7 @@ access code: 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
 6. What do they mean by crossover?
 
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -37,6 +38,17 @@ In this course, we will:
 **Import, manage, and clean data.**
 
 ```{r load_data}
+=======
+```{r load_tidyverse_ggplot}
+
+library(tidyverse)
+library(ggplot2)
+library(infer)
+
+```
+This is one of my examples of loading data.
+```{r load_scoobydoo_data}
+
 
 scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-07-13/scoobydoo.csv')
 
@@ -345,123 +357,222 @@ ggplot(scoobyboot, aes(x = mean_imdb)) +
 
 
 
-**Questions**
 
-1. How did the average running time of Scooby-Doo change?
-
-```{r season vs. airtime}
-
-scoobydoo %>% 
-  ggplot(mapping = aes(x = season, y = run_time))+
-    geom_boxplot()
-
-```
-What is up with season 2?
-
-```{r season vs. imbd}
-
-scoobydoo %>% 
-  ggplot(mapping = aes(x = index, y = imdb))+
-  geom_point()
-
-```
-
-At the very start it looks like they were highly rated. Then it almost stabilized a little. Finally all over the place. Where I would go next is how well are the movies rated compared to shows or crossovers.
-
-```{r Monster caught by Fred}
-
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = caught_fred))+
-  geom_bar(stat = "identity", fill = "light blue")
-
-```
-
-This is just me playing around with color and trying to graph things. 
-
-```{r Fred was captured}
-scoobycleaned %>% 
-    ggplot(mapping = aes(y = season, x = captured_fred))+
-  geom_bar(stat = "identity", fill = "light blue")
-```
-
-Fred captures the monster only slightly more than getting caught. Get rid of null?
-
-```{r Daphnie catches the monster}
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = caught_daphnie))+
-  geom_bar(stat = "identity", fill = "purple")
-```
-Daphnie almost never caught the monster.
-
-```{r Daphnie caught by the monster}
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = captured_daphnie))+
-  geom_bar(stat = "identity", fill = "purple")
-```
-However she got caught less than I thought (I tried light purple and it didn't work)
-
-
-```{r Velma caught the monster}
-
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = caught_velma))+
-  geom_bar(stat = "identity", fill = " dark orange")
-
-```
-
-Velma was a little more sucessful than Daphnie, but not much
-
-```{r Velma got caught by the monster}
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = captured_velma))+
-  geom_bar(stat = "identity", fill = "dark orange")
-```
-Looks to close to Daphnie. (I couldn't use light orange)
-
-```{r Shaggy caught the monster}
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = caught_shaggy))+
-  geom_bar(stat = "identity", fill = "light green")
-```
-
-Now I'm confused about what null would mean. My first thought would be the episodes where Shaggy wasn't in them, but that doesn't make sense.
-
-```{r Shaggy caught by monster}
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = captured_shaggy))+
-  geom_bar(stat = "identity", fill = "light green")
-```
-
-Less than Velma and Daphnie, but more than Fred.
-
-```{r Scooby caught the monster}
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = caught_scooby))+
-  geom_bar(stat = "identity", fill = "tan")
-```
-
-I'm kinda suprised, kinda not that Scooby caught the most monsters.
-
-```{r Scooby caught by monster}
-scoobycleaned %>% 
-  ggplot(mapping = aes(y = season, x = captured_scooby))+
-  geom_bar(stat = "identity", fill = "tan")
-```
-
-```{r bar graph}
-
-ggplot(data=scoobydoo, aes(x=monster_real, fill=monster_real)) +
-    geom_bar(colour="blue", stat="Count") +
-    guides(fill=FALSE)
-
-```
+**Trying to create a color palette for our project**
 
 ```{r}
-ggplot(data = scoobydoo, aes(x = captured_scooby, y = season, fill = season)) +
-  geom_bar(stat = "Identity", position = position_dodge(), alpha = 0.75) 
+ scooby_gang_colors <- function(...) {
+   palette <- c(`Shaggy Green` = "#B8B#19",
+                   `Shaggy Red Brown` ="#A44138",
+                   `Velma Orange` = "#F8991D",
+                   `Velma Red` = "#C70C47",
+                   `Daphne Green` = "#D0D61B",
+                   `Daphne Dark Purple` = "#6352A3",
+                   `Scooby Brown` = "#6A3400",
+                   `Scooby Blue` = "#7BDB9",
+                   `Fred Blue` ="#009DDC",
+                   `Fred Orange`= "#F47920",
+                   `Mystery Machine Green` = "#00CFD4", 
+                   `Mystery Machine Blue` ="#00E304")
+
+
+  cols <-c(...)
+  
+  if (is.null(cols))
+    return(palette)
+  
+  palette[cols]
+}
+
+#scooby_gang_colors("Shaggy Green") This was to check if it worked
+
+
+```
+https://drsimonj.svbtle.com/creating-corporate-colour-palettes-for-ggplot2
+
+
+
+**This is me creating data sets for crossovers, tv shows, tv show segmented(I don't know what this means), and movies **
+```{r fiter_out_tv_movie_crossover}
+scoobydoo_tv <- scoobydoo %>% 
+  filter(format == "TV Series")
+
+scoobydoo_tv_segmented <- scoobydoo %>% 
+  filter(format == "TV Series (segmented)")
+
+scoobydoo_crossover <- scoobydoo %>%
+  filter(format == "Crossover")
+
+
+
 ```
 
+This is my attempt a looking at all the places Mystery Inc has been.
 
+
+
+This is also an example of creating a graphical display of the world with a 
+gradient of how many episodes were in the country.
+```{r}
+
+
+scoobydoo_earth <- scoobydoo %>% 
+  select(setting_country_state)
+
+scoobydoo_earth[scoobydoo_earth == "United States"] <- "USA"
+
+
+scoobydoo_earth[scoobydoo_earth == "Alaska"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Arizona"] <- "USA"
+
+
+scoobydoo_earth[scoobydoo_earth == "California"] <- "USA"
+
+
+scoobydoo_earth[scoobydoo_earth == "Colorado"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Alaska"] <- "USA"
+
+
+scoobydoo_earth[scoobydoo_earth == "Florida"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Georgia"] <- "USA"
+
+
+scoobydoo_earth[scoobydoo_earth == "Hawaii"] <- "USA"
+
+
+scoobydoo_earth[scoobydoo_earth == "Illinois"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Kentucky"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Kentukey"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Alaska"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Louisiana"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Massachusetts"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Mississippi"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Missouri"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Nevada"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "New Jersey"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "New Mexico"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "New York"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "North Carolina"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Pennsylvania"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Ohio"] <- "USA"
+
+
+scoobydoo_earth[scoobydoo_earth == "Rhode Island"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Tennessee"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Texas"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Vermont"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Washington"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Washington D.C."] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "Wisconsin"] <- "USA"
+
+scoobydoo_earth[scoobydoo_earth == "England"] <- "UK"
+
+scoobydoo_earth[scoobydoo_earth == "Scotland"] <- "UK"
+
+scoobydoo_earth[scoobydoo_earth == "Hong Kong"] <- "China"
+
+scoobydoo_earth[scoobydoo_earth == "Siam"] <- "Thailand"
+
+scoobydoo_earth <- scoobydoo_earth %>% 
+  group_by(setting_country_state) %>% 
+  summarise(num_of_episodes = n()) %>% 
+  select(setting_country_state, num_of_episodes) %>% 
+  filter(setting_country_state != "Atlantis") %>% 
+  filter(setting_country_state != "Bermuda Triangle") %>% 
+  filter(setting_country_state != "Indian Reserve") %>%  # Too vague
+  filter(setting_country_state != "Mars") %>% 
+  filter(setting_country_state != "Moon") %>% 
+  filter(setting_country_state != "Pre-Historic") %>% 
+  filter(setting_country_state != "Space") %>% 
+  filter(setting_country_state != "Africa") %>% # Africa is a continent
+  filter(setting_country_state != "Caribean") %>% # Caribean is part of many countries
+  filter(setting_country_state != "South America") %>% #South America is a continent
+  filter(setting_country_state != "Tibet") #I don't know enough about the history of Tibet
+  
+names(scoobydoo_earth)[names(scoobydoo_earth) == "setting_country_state"] <- "region"
+
+mapdata <- map_data("world")
+
+mapdata <-left_join(mapdata, scoobydoo_earth, by = "region")
+
+#mapdata1 <- mapdata %>% filter(!is.na(mapdata$num_of_episodes)) This was making it so I couldn't see all the countries and commenting it out fixed it.
+
+map1 <- ggplot(mapdata, aes(x = long, y = lat, group = group))+
+  geom_polygon(aes(fill = num_of_episodes), color = "black")
+map1
+
+scoobydoo_world_map <- map1 + scale_fill_gradient(name = "Number of Episodes", low = scooby_gang_colors("Mystery Machine Green"), high = scooby_gang_colors("Mystery Machine Blue"), na.value = "gray")+
+  labs(title = "Mystery Inc Traveling Around the World",
+       caption = "Excluded Places inclued: Atlantis, Bermuda Triangle, Mars, Moon, Pre-Historic, and Space")+
+  theme(axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      rect = element_blank())
+scoobydoo_world_map
+
+
+I used this (youtube video)[https://www.youtube.com/watch?v=AgWgPSZ7Gp0] to find out how to make the world map
+
+```{r catchphrases}
+scoobydoo_cp <- scoobydoo %>% 
+  select("another_mystery", "jeepers", "jinkies", "my_glasses", "zoinks","groovy","rooby_rooby_roo")
+
+scoobydoo_cp[scoobydoo_cp == "NULL"] <- "0"
+
+
+
+
+scoobydoo_cp[] <- lapply(scoobydoo_cp, as.numeric)
+
+fred <- sum(scoobydoo_cp$another_mystery) 
+daphne <- sum(scoobydoo_cp$jeepers)
+velma1 <- sum(scoobydoo_cp$jinkies)
+velma2 <- sum(scoobydoo_cp$my_glasses)
+shaggy1 <- sum(scoobydoo_cp$zoinks)
+shaggy2 <- sum(scoobydoo_cp$groovy)
+scooby <- sum(scoobydoo_cp$rooby_rooby_roo)
+
+velma <- sum(velma1,velma2)
+shaggy <- sum(shaggy1,shaggy2)
+
+character <- c("Fred", "Daphne", "Velma", "Shaggy", "Scooby")
+catch_phrase <- c(fred, daphne, velma, shaggy, scooby)
+
+gang_cp <- data.frame(character, catch_phrase)
+
+ggplot(data = gang_cp)+
+  geom_bar(mapping = aes(x = character, y = catch_phrase), stat = "identity")+
+  scale_fill_manual(values =c("Fred" = scooby_gang_colors("Fred Blue"),
+                              "Daphne" = scooby_gang_colors("Daphne Purple"),
+                              "Velma" = scooby_gang_colors("Velma Orange"),
+                              "Shaggy" =scooby_gang_colors("Shaggy Green"),
+                              "Scooby" = scooby_gang_colors("Scooby Brown")))
+```
 
 
 
