@@ -322,7 +322,7 @@ out how many times the line was said and made a variable named after the charact
 catch phrases so we added them up. We made another data set of just how many times each character used their catch phrase
 and finally graphed them using bar graphs.
 *********************************************************************************************************************************************
-
+*********************************************************************************************************************************************
 ```{r catchphrases}
 scoobydoo_cp <- scoobydoo %>% 
   select("another_mystery", "jeepers", "jinkies", "my_glasses", "zoinks","groovy","rooby_rooby_roo")
@@ -345,17 +345,20 @@ shaggy <- sum(shaggy1,shaggy2)
 character <- c("Fred", "Daphne", "Velma", "Shaggy", "Scooby")
 catch_phrase <- c(fred, daphne, velma, shaggy, scooby)
 
-gang_cp <- data.frame(character, catch_phrase)
+gang_color <- unname(c(scooby_gang_colors("Fred Blue"),
+                                       scooby_gang_colors("Daphne Dark Purple"),
+                                       scooby_gang_colors("Velma Orange"),
+                                       scooby_gang_colors("Shaggy Green"),
+                                       scooby_gang_colors("Scooby Brown")))
 
-ggplot(data = gang_cp)+
-  geom_bar(mapping = aes(x = character, y = catch_phrase), stat = "identity")+
-  scale_fill_manual(values =c("Fred" = scooby_gang_colors("Fred Blue"),
-                              "Daphne" = scooby_gang_colors("Daphne Purple"),
-                              "Velma" = scooby_gang_colors("Velma Orange"),
-                              "Shaggy" =scooby_gang_colors("Shaggy Green"),
-                              "Scooby" = scooby_gang_colors("Scooby Brown")))
+gang_cp <- data.frame(character, catch_phrase, color = gang_color)
+
+
+ggplot(data = gang_cp, aes( x = character, y = catch_phrase, fill= gang_color ))+
+  geom_bar( stat = "identity") +
+  scale_fill_identity(breaks = gang_color)
 ```
-
+*********************************************************************************************************************************************
 
 
 
